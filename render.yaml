@@ -1,0 +1,40 @@
+envVarGroups:
+  - name: stylemate-production
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: FRONTEND_ORIGINS
+        sync: false
+      - key: ALLOWED_HOSTS
+        value: stylemate-api.onrender.com
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_PUBLISHABLE_KEY
+        sync: false
+      - key: SUPABASE_SECRET_KEY
+        sync: false
+      - key: SUPABASE_STORAGE_BUCKET
+        value: wardrobe-private
+      - key: MEDIA_STORAGE_PROVIDER
+        value: supabase
+      - key: MAX_UPLOAD_MB
+        value: "10"
+
+services:
+  - type: web
+    name: stylemate-api
+    runtime: python
+    buildCommand: python -m pip install -r backend/requirements.txt && python -m alembic upgrade head
+    startCommand: uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - fromGroup: stylemate-production
+  - type: worker
+    name: stylemate-reminder-worker
+    runtime: python
+    buildCommand: python -m pip install -r backend/requirements.txt
+    startCommand: python -m backend.scripts.reminder_worker
+    envVars:
+      - fromGroup: stylemate-production
