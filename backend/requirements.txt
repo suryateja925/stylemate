@@ -8,7 +8,7 @@ pydantic==2.13.4
 python-multipart==0.0.32
 # Pillow 11.3.0 provides a CPython 3.14 wheel on Windows; 11.1.0 falls back to
 # a large source archive and is fragile on offline/interrupted installs.
-pillow==11.3.0
+pillow==13.0.0
 httpx==0.28.1
 python-dotenv==1.2.2
 openai==1.109.1
